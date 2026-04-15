@@ -1,33 +1,16 @@
 import type { IUser } from "../types/IUser";
-import type { Rol } from "../types/Rol";
-import { getUSer, removeUser } from "./localStorage";
-import { navigate } from "./navigate";
+import { getUsers } from "./localStorage";
 
-export const checkAuhtUser = (
-  redireccion1: string,
-  redireccion2: string,
-  rol: Rol
-) => {
-  console.log("comienzo de checkeo");
+export function isEmailTaken(email: string): boolean {
+  const users = getUsers();
+  return users.some((u) => u.email === email);
+}
 
-  const user = getUSer();
-
-  if (!user) {
-    console.log("no existe en local");
-    navigate(redireccion1);
-    return;
-  } else {
-    console.log("existe pero no tiene el rol necesario");
-
-    const parseUser: IUser = JSON.parse(user);
-    if (parseUser.role !== rol) {
-      navigate(redireccion2);
-      return;
-    }
-  }
-};
-
-export const logout = () => {
-  removeUser();
-  navigate("/src/pages/auth/login/login.html");
-};
+export function loginUser(email: string, password: string): IUser | null {
+  const users = getUsers();
+  const normalizedEmail = email.trim().toLowerCase();
+  const user = users.find(
+    (u) => u.email.toLowerCase() === normalizedEmail && u.password === password,
+  );
+  return user ?? null;
+}
