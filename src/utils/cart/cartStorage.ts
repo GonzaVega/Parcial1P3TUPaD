@@ -1,10 +1,26 @@
 import type { Product } from "../../types/product";
 import type { CartItem } from "../../types/cart";
+import { getCurrentUser } from "../localStorage";
 
-const CART_KEY = "cart";
+const CART_KEY_PREFIX = "cart:user:";
+
+function getActiveCartKey(): string | null {
+  const user = getCurrentUser();
+
+  if (!user) {
+    return null;
+  }
+
+  return `${CART_KEY_PREFIX}${user.id}`;
+}
 
 function readCartItems(): CartItem[] {
-  const raw = localStorage.getItem(CART_KEY);
+  const cartKey = getActiveCartKey();
+  if (!cartKey) {
+    return [];
+  }
+
+  const raw = localStorage.getItem(cartKey);
 
   if (!raw) {
     return [];
@@ -24,7 +40,12 @@ function readCartItems(): CartItem[] {
 }
 
 function saveCartItems(items: CartItem[]): void {
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
+  const cartKey = getActiveCartKey();
+  if (!cartKey) {
+    return;
+  }
+
+  localStorage.setItem(cartKey, JSON.stringify(items));
 }
 
 export function getCartItems(): CartItem[] {
@@ -47,4 +68,55 @@ export function addProductToCart(product: Product): CartItem[] {
 
 export function getCartItemsCount(): number {
   return readCartItems().reduce((total, item) => total + item.quantity, 0);
+}
+
+export function incrementCartItemQuantity(productId: number): CartItem[] {
+  const cartItems = readCartItems();
+  const item = cartItems.find((cartItem) => cartItem.product.id === productId);
+
+  if (!item) {
+    return cartItems;
+  }
+
+  item.quantity += 1;
+  saveCartItems(cartItems);
+  return cartItems;
+}
+
+export function decrementCartItemQuantity(productId: number): CartItem[] {
+  const cartItems = readCartItems();
+  const item = cartItems.find((cartItem) => cartItem.product.id === productId);
+
+  if (!item) {
+    return cartItems;
+  }
+
+  item.quantity -= 1;
+
+  const filteredItems = cartItems.filter((cartItem) => cartItem.quantity > 0);
+  saveCartItems(filteredItems);
+  return filteredItems;
+}
+
+export function removeItemFromCart(productId: number): CartItem[] {
+  const cartItems = readCartItems();
+  const filteredItems = cartItems.filter((item) => item.product.id !== productId);
+  saveCartItems(filteredItems);
+  return filteredItems;
+}
+
+export function clearCart(): void {
+  const cartKey = getActiveCartKey();
+  if (!cartKey) {
+    return;
+  }
+
+  localStorage.removeItem(cartKey);
+}
+
+export function getCartSubtotal(): number {
+  return readCartItems().reduce(
+    (subtotal, item) => subtotal + item.product.precio * item.quantity,
+    0,
+  );
 }

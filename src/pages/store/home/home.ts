@@ -2,14 +2,17 @@ import { getCurrentUser } from "../../../utils/localStorage";
 import { PRODUCTS } from "../../../data/data";
 import { filterProductsByName } from "../../../utils/filters/productSearch";
 import { filterProductsByCategory } from "../../../utils/filters/productCategoryFilter";
-import { addProductToCart, getCartItemsCount } from "../../../utils/cart/cartStorage";
+import {
+  addProductToCart,
+  getCartItemsCount,
+} from "../../../utils/cart/cartStorage";
 import type { Product } from "../../../types/product";
 
 const categorias = Array.from(
   new Set(
-    PRODUCTS.flatMap((product) => product.categorias.map((category) => category.nombre)).filter(
-      Boolean,
-    ),
+    PRODUCTS.flatMap((product) =>
+      product.categorias.map((category) => category.nombre),
+    ).filter(Boolean),
   ),
 );
 
@@ -40,7 +43,7 @@ const loadLinks = () => {
   const cartLi = document.createElement("li");
   cartLi.className = "navbar-cart-item";
   cartLi.innerHTML = `
-    <a href="#" class="navbar-cart-link" aria-label="Carrito de supermercado">
+    <a href="/src/pages/store/cart/cart.html" class="navbar-cart-link" aria-label="Carrito de supermercado">
       <span class="navbar-cart-icon">${CART_ICON}</span>
       <span class="navbar-cart-badge" data-cart-badge aria-live="polite"></span>
     </a>
@@ -105,7 +108,8 @@ const handleAddToCart = (product: Product) => {
 const renderSinResultados = (container: Element) => {
   const message = document.createElement("p");
   message.className = "product-list-empty";
-  message.textContent = "No se encontraron productos con los filtros aplicados.";
+  message.textContent =
+    "No se encontraron productos con los filtros aplicados.";
   container.appendChild(message);
 };
 
@@ -146,7 +150,8 @@ const applyFilters = () => {
 };
 
 const updateActiveCategory = (clickedCategory: string) => {
-  const links = document.querySelectorAll<HTMLAnchorElement>(".category-list a");
+  const links =
+    document.querySelectorAll<HTMLAnchorElement>(".category-list a");
 
   links.forEach((link) => {
     const isCurrent = link.dataset.category === clickedCategory;
