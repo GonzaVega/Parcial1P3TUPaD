@@ -2,10 +2,10 @@
 
 ## Datos académicos
 
-| Comisión | 11 |
-| Profesores | Alberto Cortez, Cinthia Rigoni |
-| Tutor | Juan Robledo |
-| Alumno | Gonzalo Vega |
+Comisión: 11
+Profesores: Alberto Cortez - Cinthia Rigoni
+Tutor: Juan Robledo
+Alumno: Gonzalo Vega
 
 Proyecto correspondiente al Parcial 1 de la materia Programación 3 (TUPaD - UTN).
 
