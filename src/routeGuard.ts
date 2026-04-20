@@ -14,7 +14,7 @@ function guardRoute() {
   }
 
   if (user?.role === "client" && path.includes("/admin")) {
-    window.location.href = "/src/pages/client/home/home.html";
+    window.location.href = "/src/pages/store/home/home.html";
     return;
   }
 
@@ -22,7 +22,7 @@ function guardRoute() {
     if (user.role === "admin") {
       window.location.href = "/src/pages/admin/home/home.html";
     } else {
-      window.location.href = "/src/pages/client/home/home.html";
+      window.location.href = "/src/pages/store/home/home.html";
     }
   }
 }

@@ -10,7 +10,7 @@ const initPage = () => {
   }
 
   if (user.role !== "admin") {
-    window.location.href = "/src/pages/client/home/home.html";
+    window.location.href = "/src/pages/store/home/home.html";
     return;
   }
 

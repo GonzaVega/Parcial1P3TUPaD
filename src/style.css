@@ -154,6 +154,16 @@ aside + main {
   gap: 20px;
 }
 
+.product-list-empty {
+  grid-column: 1 / -1;
+  background-color: var(--color-blanco);
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  font-weight: bold;
+}
+
 .product-list article {
   background-color: var(--color-blanco);
   border-radius: 10px;
