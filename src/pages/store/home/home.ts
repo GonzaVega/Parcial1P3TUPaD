@@ -1,7 +1,8 @@
 import { getCurrentUser } from "../../../utils/localStorage";
 import { PRODUCTS } from "../../../data/data";
-import { filterProductsByName } from "../../../utils/productSearch";
-import { filterProductsByCategory } from "../../../utils/productCategoryFilter";
+import { filterProductsByName } from "../../../utils/filters/productSearch";
+import { filterProductsByCategory } from "../../../utils/filters/productCategoryFilter";
+import { addProductToCart, getCartItemsCount } from "../../../utils/cart/cartStorage";
 import type { Product } from "../../../types/product";
 
 const categorias = Array.from(
@@ -13,6 +14,11 @@ const categorias = Array.from(
 );
 
 const TODAS_LABEL = "Todas";
+const CART_ICON = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M7 4h-2l-1 2v2h2l3.6 7.59-1.35 2.44A2 2 0 0 0 10 21h9v-2h-9l1.1-2h6.45a2 2 0 0 0 1.79-1.11L22 8H7.42L7 4zm0 0a1 1 0 0 0-1-1H3v2h2l1 0zM10 22a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm8 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+  </svg>
+`;
 
 let selectedCategory: string | null = null;
 let searchValue = "";
@@ -21,13 +27,25 @@ const loadLinks = () => {
   const linksList = document.querySelector(".navbar-menu");
   if (!linksList) return;
 
-  const links = ["Inicio", "Mis Pedidos", "Carrito"];
+  linksList.innerHTML = "";
+
+  const links = ["Inicio", "Mis Pedidos"];
 
   links.forEach((link) => {
     const li = document.createElement("li");
     li.innerHTML = `<a href="#">${link}</a>`;
     linksList.appendChild(li);
   });
+
+  const cartLi = document.createElement("li");
+  cartLi.className = "navbar-cart-item";
+  cartLi.innerHTML = `
+    <a href="#" class="navbar-cart-link" aria-label="Carrito de supermercado">
+      <span class="navbar-cart-icon">${CART_ICON}</span>
+      <span class="navbar-cart-badge" data-cart-badge aria-live="polite"></span>
+    </a>
+  `;
+  linksList.appendChild(cartLi);
 
   const adminLink = document.createElement("li");
   const user = getCurrentUser();
@@ -70,11 +88,19 @@ const cargarCategorias = () => {
   });
 };
 
-function agregarAlCarrito(productoNombre: string) {
-  alert(`Producto ${productoNombre} agregado al carrito`);
-}
+const syncCartBadge = () => {
+  const badge = document.querySelector<HTMLElement>("[data-cart-badge]");
+  if (!badge) return;
 
-(window as any).agregarAlCarrito = agregarAlCarrito;
+  const count = getCartItemsCount();
+  badge.textContent = String(count);
+  badge.hidden = count === 0;
+};
+
+const handleAddToCart = (product: Product) => {
+  addProductToCart(product);
+  syncCartBadge();
+};
 
 const renderSinResultados = (container: Element) => {
   const message = document.createElement("p");
@@ -101,8 +127,14 @@ const cargarProductos = (productsToRender: Product[]) => {
       <h3>${producto.nombre}</h3>
       <p>${producto.descripcion}</p>
       <p><strong>Precio $${producto.precio.toLocaleString()}</strong></p>
-      <button onclick="agregarAlCarrito('${producto.nombre}')">Agregar</button>
     `;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Agregar al carrito";
+    button.addEventListener("click", () => handleAddToCart(producto));
+
+    article.appendChild(button);
     productList.appendChild(article);
   });
 };
@@ -166,3 +198,4 @@ cargarCategorias();
 applyFilters();
 setupCategoryFilter();
 setupSearch();
+syncCartBadge();

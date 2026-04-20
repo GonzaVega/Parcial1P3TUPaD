@@ -1,4 +1,4 @@
-import type { Product } from "../types/product";
+import type { Product } from "../../types/product";
 
 function normalizeText(value: string): string {
   return value.trim().toLowerCase();

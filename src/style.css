@@ -87,10 +87,48 @@ header hr {
   list-style: none;
   display: flex;
   gap: 16px;
+  align-items: center;
 }
 
 .navbar-menu a {
   font-size: 14px;
+}
+
+.navbar-cart-item {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-cart-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.navbar-cart-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+}
+
+.navbar-cart-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.navbar-cart-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background-color: var(--color-primario);
+  color: var(--color-blanco);
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  font-weight: bold;
 }
 
 aside {
@@ -195,6 +233,18 @@ aside + main {
 
 .product-list article button {
   margin-top: 8px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 footer {
