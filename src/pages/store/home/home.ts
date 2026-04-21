@@ -8,8 +8,9 @@ import {
 } from "../../../utils/cart/cartStorage";
 import type { Product } from "../../../types/product";
 import { CART_ICON } from "../../../utils/cart/cartIcon";
+import type { IUser } from "../../../types/IUser";
 
-const categorias = Array.from(
+const categorias: string[] = Array.from(
   new Set(
     PRODUCTS.flatMap((product) =>
       product.categorias.map((category) => category.nombre),
@@ -17,26 +18,26 @@ const categorias = Array.from(
   ),
 );
 
-const TODAS_LABEL = "Todas";
+const TODAS_LABEL: string = "Todas";
 
 let selectedCategory: string | null = null;
-let searchValue = "";
+let searchValue: string = "";
 
-const loadLinks = () => {
-  const linksList = document.querySelector(".navbar-menu");
+const loadLinks: () => void = () => {
+  const linksList: HTMLElement | null = document.querySelector(".navbar-menu");
   if (!linksList) return;
 
   linksList.innerHTML = "";
 
-  const links = ["Inicio", "Mis Pedidos"];
+  const links: string[] = ["Inicio", "Mis Pedidos"];
 
   links.forEach((link) => {
-    const li = document.createElement("li");
+    const li: HTMLElement = document.createElement("li");
     li.innerHTML = `<a href="#">${link}</a>`;
     linksList.appendChild(li);
   });
 
-  const cartLi = document.createElement("li");
+  const cartLi: HTMLElement = document.createElement("li");
   cartLi.className = "navbar-cart-item";
   cartLi.innerHTML = `
     <a href="/src/pages/store/cart/cart.html" class="navbar-cart-link" aria-label="Carrito de supermercado">
@@ -46,27 +47,28 @@ const loadLinks = () => {
   `;
   linksList.appendChild(cartLi);
 
-  const adminLink = document.createElement("li");
-  const user = getCurrentUser();
+  const adminLink: HTMLElement = document.createElement("li");
+  const user: IUser | null = getCurrentUser();
   if (user?.role === "admin") {
     adminLink.innerHTML = `<a href="/src/pages/admin/home/home.html"><strong>Panel Admin</strong></a>`;
   }
   linksList.appendChild(adminLink);
 
-  const logoutLi = document.createElement("li");
+  const logoutLi: HTMLElement = document.createElement("li");
   logoutLi.innerHTML = '<a href="#" id="logout-link">Cerrar Sesión</a>';
   linksList.appendChild(logoutLi);
 };
 
-const cargarCategorias = () => {
-  const categoryList = document.querySelector(".category-list");
+const cargarCategorias: () => void = () => {
+  const categoryList: HTMLElement | null =
+    document.querySelector(".category-list");
   if (!categoryList) return;
 
   categoryList.innerHTML = "";
 
   const createCategoryItem = (categoryName: string, active = false) => {
-    const li = document.createElement("li");
-    const link = document.createElement("a");
+    const li: HTMLElement = document.createElement("li");
+    const link: HTMLAnchorElement = document.createElement("a");
 
     link.href = "#";
     link.textContent = categoryName;
@@ -87,30 +89,36 @@ const cargarCategorias = () => {
   });
 };
 
-const syncCartBadge = () => {
-  const badge = document.querySelector<HTMLElement>("[data-cart-badge]");
+const syncCartBadge: () => void = () => {
+  const badge: HTMLElement | null =
+    document.querySelector<HTMLElement>("[data-cart-badge]");
   if (!badge) return;
 
-  const count = getCartItemsCount();
+  const count: number = getCartItemsCount();
   badge.textContent = String(count);
   badge.hidden = count === 0;
 };
 
-const handleAddToCart = (product: Product) => {
+const handleAddToCart: (product: Product) => void = (product: Product) => {
   addProductToCart(product);
   syncCartBadge();
 };
 
-const renderSinResultados = (container: Element) => {
-  const message = document.createElement("p");
+const renderSinResultados: (container: Element) => void = (
+  container: Element,
+) => {
+  const message: HTMLParagraphElement = document.createElement("p");
   message.className = "product-list-empty";
   message.textContent =
     "No se encontraron productos con los filtros aplicados.";
   container.appendChild(message);
 };
 
-const cargarProductos = (productsToRender: Product[]) => {
-  const productList = document.querySelector(".product-list");
+const cargarProductos: (productsToRender: Product[]) => void = (
+  productsToRender: Product[],
+) => {
+  const productList: HTMLElement | null =
+    document.querySelector(".product-list");
   if (!productList) return;
 
   productList.innerHTML = "";
@@ -121,7 +129,7 @@ const cargarProductos = (productsToRender: Product[]) => {
   }
 
   productsToRender.forEach((producto) => {
-    const article = document.createElement("article");
+    const article: HTMLElement = document.createElement("article");
     article.innerHTML = `
       <img src="${producto.imagen}" alt="${producto.nombre}" height="200" width="250" />
       <h3>${producto.nombre}</h3>
@@ -129,7 +137,7 @@ const cargarProductos = (productsToRender: Product[]) => {
       <p><strong>Precio $${producto.precio.toLocaleString()}</strong></p>
     `;
 
-    const button = document.createElement("button");
+    const button: HTMLButtonElement = document.createElement("button");
     button.type = "button";
     button.textContent = "Agregar al carrito";
     button.addEventListener("click", () => handleAddToCart(producto));
@@ -139,34 +147,41 @@ const cargarProductos = (productsToRender: Product[]) => {
   });
 };
 
-const applyFilters = () => {
-  const byCategory = filterProductsByCategory(PRODUCTS, selectedCategory);
-  const byName = filterProductsByName(byCategory, searchValue);
+const applyFilters: () => void = () => {
+  const byCategory: Product[] = filterProductsByCategory(
+    PRODUCTS,
+    selectedCategory,
+  );
+  const byName: Product[] = filterProductsByName(byCategory, searchValue);
   cargarProductos(byName);
 };
 
-const updateActiveCategory = (clickedCategory: string) => {
-  const links =
+const updateActiveCategory: (clickedCategory: string) => void = (
+  clickedCategory: string,
+) => {
+  const links: NodeListOf<HTMLAnchorElement> =
     document.querySelectorAll<HTMLAnchorElement>(".category-list a");
 
   links.forEach((link) => {
-    const isCurrent = link.dataset.category === clickedCategory;
+    const isCurrent: boolean = link.dataset.category === clickedCategory;
     link.classList.toggle("active", isCurrent);
   });
 };
 
-const setupCategoryFilter = () => {
-  const categoryList = document.querySelector<HTMLElement>(".category-list");
+const setupCategoryFilter: () => void = () => {
+  const categoryList: HTMLElement | null =
+    document.querySelector<HTMLElement>(".category-list");
   if (!categoryList) return;
 
   categoryList.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement | null;
-    const clickedLink = target?.closest("a");
+    const target: HTMLElement | null = event.target as HTMLElement | null;
+    const clickedLink: HTMLAnchorElement | null | undefined =
+      target?.closest("a");
     if (!clickedLink) return;
 
     event.preventDefault();
 
-    const category = clickedLink.dataset.category;
+    const category: string | undefined = clickedLink.dataset.category;
     if (!category) return;
 
     selectedCategory = category === TODAS_LABEL ? null : category;
@@ -175,13 +190,15 @@ const setupCategoryFilter = () => {
   });
 };
 
-const setupSearch = () => {
-  const form = document.querySelector<HTMLFormElement>("main > form");
-  const input = form?.querySelector<HTMLInputElement>('input[type="text"]');
+const setupSearch: () => void = () => {
+  const form: HTMLFormElement | null =
+    document.querySelector<HTMLFormElement>("main > form");
+  const input: HTMLInputElement | null | undefined =
+    form?.querySelector<HTMLInputElement>('input[type="text"]');
 
   if (!form || !input) return;
 
-  const applySearch = () => {
+  const applySearch: () => void = () => {
     searchValue = input.value;
     applyFilters();
   };

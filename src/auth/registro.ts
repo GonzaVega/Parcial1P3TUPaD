@@ -2,28 +2,29 @@ import { getUsers, saveUsers } from "../utils/localStorage";
 import { isEmailTaken } from "../utils/auth";
 import type { IUser } from "../types/IUser";
 
-const form = document.querySelector<HTMLFormElement>("form");
+const form: HTMLFormElement | null =
+  document.querySelector<HTMLFormElement>("form");
 
 if (form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const firstName = (
+    const firstName: string | undefined = (
       document.getElementById("firstName") as HTMLInputElement | null
     )?.value.trim();
-    const lastName = (
+    const lastName: string | undefined = (
       document.getElementById("lastName") as HTMLInputElement | null
     )?.value.trim();
-    const email = (
+    const email: string | undefined = (
       document.getElementById("email") as HTMLInputElement | null
     )?.value.trim();
-    const phone = (
+    const phone: string | undefined = (
       document.getElementById("phone") as HTMLInputElement | null
     )?.value.trim();
-    const password = (
+    const password: string | undefined = (
       document.getElementById("password") as HTMLInputElement | null
     )?.value.trim();
-    const confirmPassword = (
+    const confirmPassword: string | undefined = (
       document.getElementById("confirmPassword") as HTMLInputElement | null
     )?.value.trim();
 
@@ -47,7 +48,7 @@ if (form) {
       return;
     }
 
-    const users = getUsers();
+    const users: IUser[] = getUsers();
 
     const newUser: IUser = {
       id: Date.now(),

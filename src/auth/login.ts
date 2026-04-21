@@ -1,16 +1,18 @@
+import type { IUser } from "../types/IUser";
 import { loginUser } from "../utils/auth";
 import { setCurrentUser } from "../utils/localStorage";
 
-const form = document.querySelector<HTMLFormElement>("form");
+const form: HTMLFormElement | null =
+  document.querySelector<HTMLFormElement>("form");
 
 if (form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const email = (
+    const email: string | undefined = (
       document.getElementById("email") as HTMLInputElement | null
     )?.value.trim();
-    const password = (
+    const password: string | undefined = (
       document.getElementById("password") as HTMLInputElement | null
     )?.value.trim();
 
@@ -19,7 +21,7 @@ if (form) {
       return;
     }
 
-    const user = loginUser(email, password);
+    const user: IUser | null = loginUser(email, password);
 
     if (!user) {
       alert("Credenciales inválidas.");

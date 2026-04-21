@@ -12,7 +12,7 @@ export function filterProductsByCategory(
     return products;
   }
 
-  const normalizedCategory = normalizeText(selectedCategory);
+  const normalizedCategory: string = normalizeText(selectedCategory);
 
   return products.filter((product) =>
     product.categorias.some(

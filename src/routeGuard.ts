@@ -1,10 +1,11 @@
+import type { IUser } from "./types/IUser";
 import { getCurrentUser } from "./utils/localStorage";
 
-function guardRoute() {
-  const user = getCurrentUser();
-  const path = window.location.pathname;
+function guardRoute(): void {
+  const user: IUser | null = getCurrentUser();
+  const path: string = window.location.pathname;
 
-  const isAuthPage =
+  const isAuthPage: boolean =
     path.endsWith("/src/pages/auth/login/login.html") ||
     path.endsWith("/src/pages/auth/login/registro.html");
 

@@ -1,8 +1,8 @@
 import { setCurrentUser } from "../utils/localStorage";
 
 document.addEventListener("click", (event) => {
-  const target = event.target as HTMLElement | null;
-  const logoutLink = target?.closest(
+  const target: HTMLElement | null = event.target as HTMLElement | null;
+  const logoutLink: HTMLAnchorElement | null = target?.closest(
     "#logout-link",
   ) as HTMLAnchorElement | null;
 

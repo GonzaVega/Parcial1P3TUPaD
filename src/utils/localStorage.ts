@@ -1,11 +1,11 @@
 import type { IUser } from "../types/IUser";
 import { initialUsers } from "../data/users";
 
-const USERS_KEY = "users";
-const USER_DATA_KEY = "userData";
+const USERS_KEY: string = "users";
+const USER_DATA_KEY: string = "userData";
 
 export function getUsers(): IUser[] {
-  const raw = localStorage.getItem(USERS_KEY);
+  const raw: string | null = localStorage.getItem(USERS_KEY);
 
   if (!raw) {
     if (initialUsers.length > 0) {
@@ -15,15 +15,17 @@ export function getUsers(): IUser[] {
     return [];
   }
   try {
-    const parsed = JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
     if (Array.isArray(parsed)) {
-      const users = parsed as IUser[];
+      const users: IUser[] = parsed as IUser[];
 
-      const mergedUsers = [...users];
-      let hasChanges = false;
+      const mergedUsers: IUser[] = [...users];
+      let hasChanges: boolean = false;
 
       initialUsers.forEach((seedUser) => {
-        const exists = mergedUsers.some((u) => u.email === seedUser.email);
+        const exists: boolean = mergedUsers.some(
+          (u) => u.email === seedUser.email,
+        );
         if (!exists) {
           mergedUsers.push(seedUser);
           hasChanges = true;
@@ -47,7 +49,7 @@ export function saveUsers(users: IUser[]): void {
 }
 
 export function getCurrentUser(): IUser | null {
-  const raw = localStorage.getItem(USER_DATA_KEY);
+  const raw: string | null = localStorage.getItem(USER_DATA_KEY);
   if (!raw) return null;
   try {
     return JSON.parse(raw) as IUser;

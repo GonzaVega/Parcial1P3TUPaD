@@ -9,6 +9,7 @@ import {
   removeItemFromCart,
 } from "../../../utils/cart/cartStorage";
 import { CART_ICON } from "../../../utils/cart/cartIcon";
+import type { IUser } from "../../../types/IUser";
 
 const SHIPPING_COST: number = 500;
 
@@ -16,21 +17,21 @@ function formatCurrency(value: number): string {
   return `$${value.toFixed(2)}`;
 }
 
-const loadLinks = () => {
-  const linksList = document.querySelector(".navbar-menu");
+const loadLinks: () => void = () => {
+  const linksList: HTMLElement | null = document.querySelector(".navbar-menu");
   if (!linksList) return;
 
   linksList.innerHTML = "";
 
-  const homeLi = document.createElement("li");
+  const homeLi: HTMLElement = document.createElement("li");
   homeLi.innerHTML = '<a href="/src/pages/store/home/home.html">Inicio</a>';
   linksList.appendChild(homeLi);
 
-  const ordersLi = document.createElement("li");
+  const ordersLi: HTMLElement = document.createElement("li");
   ordersLi.innerHTML = '<a href="#">Mis Pedidos</a>';
   linksList.appendChild(ordersLi);
 
-  const cartLi = document.createElement("li");
+  const cartLi: HTMLElement = document.createElement("li");
   cartLi.className = "navbar-cart-item";
   cartLi.innerHTML = `
     <a href="/src/pages/store/cart/cart.html" class="navbar-cart-link" aria-label="Carrito de supermercado">
@@ -40,48 +41,51 @@ const loadLinks = () => {
   `;
   linksList.appendChild(cartLi);
 
-  const adminLink = document.createElement("li");
-  const user = getCurrentUser();
+  const adminLink: HTMLElement = document.createElement("li");
+  const user: IUser | null = getCurrentUser();
   if (user?.role === "admin") {
     adminLink.innerHTML =
       '<a href="/src/pages/admin/home/home.html"><strong>Panel Admin</strong></a>';
     linksList.appendChild(adminLink);
   }
 
-  const logoutLi = document.createElement("li");
+  const logoutLi: HTMLElement = document.createElement("li");
   logoutLi.innerHTML = '<a href="#" id="logout-link">Cerrar Sesión</a>';
   linksList.appendChild(logoutLi);
 };
 
-const syncCartBadge = () => {
-  const badge = document.querySelector<HTMLElement>("[data-cart-badge]");
+const syncCartBadge: () => void = () => {
+  const badge: HTMLElement | null =
+    document.querySelector<HTMLElement>("[data-cart-badge]");
   if (!badge) return;
 
-  const count = getCartItemsCount();
+  const count: number = getCartItemsCount();
   badge.textContent = String(count);
   badge.hidden = count === 0;
 };
 
-const renderSummary = () => {
-  const subtotalEl = document.querySelector<HTMLElement>(
+const renderSummary: () => void = () => {
+  const subtotalEl: HTMLElement | null = document.querySelector<HTMLElement>(
     "[data-summary-subtotal]",
   );
-  const shippingEl = document.querySelector<HTMLElement>(
+  const shippingEl: HTMLElement | null = document.querySelector<HTMLElement>(
     "[data-summary-shipping]",
   );
-  const totalEl = document.querySelector<HTMLElement>("[data-summary-total]");
-  const checkoutBtn = document.getElementById(
+  const totalEl: HTMLElement | null = document.querySelector<HTMLElement>(
+    "[data-summary-total]",
+  );
+  const checkoutBtn: HTMLButtonElement | null = document.getElementById(
     "checkout-btn",
   ) as HTMLButtonElement | null;
-  const clearCartBtn = document.getElementById(
+  const clearCartBtn: HTMLButtonElement | null = document.getElementById(
     "clear-cart-btn",
   ) as HTMLButtonElement | null;
 
   if (!subtotalEl || !shippingEl || !totalEl) return;
 
-  const subtotal = getCartSubtotal();
-  const shipping = subtotal > 0 ? SHIPPING_COST : 0;
-  const total = subtotal + shipping;
+  const subtotal: number = getCartSubtotal();
+  const shipping: number = subtotal > 0 ? SHIPPING_COST : 0;
+  const total: number = subtotal + shipping;
 
   subtotalEl.textContent = formatCurrency(subtotal);
   shippingEl.textContent = formatCurrency(shipping);
@@ -96,15 +100,17 @@ const renderSummary = () => {
   }
 };
 
-const renderEmptyState = (container: HTMLElement) => {
-  const empty = document.createElement("p");
+const renderEmptyState: (container: HTMLElement) => void = (
+  container: HTMLElement,
+) => {
+  const empty: HTMLParagraphElement = document.createElement("p");
   empty.className = "cart-empty";
   empty.textContent = "Tu carrito está vacío.";
   container.appendChild(empty);
 };
 
-const renderCartItems = () => {
-  const itemsContainer =
+const renderCartItems: () => void = () => {
+  const itemsContainer: HTMLElement | null =
     document.querySelector<HTMLElement>("[data-cart-items]");
   if (!itemsContainer) return;
 
@@ -117,7 +123,7 @@ const renderCartItems = () => {
   }
 
   items.forEach((item) => {
-    const card = document.createElement("article");
+    const card: HTMLElement = document.createElement("article");
     card.className = "cart-item";
 
     card.innerHTML = `
@@ -136,15 +142,12 @@ const renderCartItems = () => {
       <button type="button" class="danger small" data-action="remove">Eliminar</button>
     `;
 
-    const decrementBtn = card.querySelector<HTMLButtonElement>(
-      '[data-action="decrement"]',
-    );
-    const incrementBtn = card.querySelector<HTMLButtonElement>(
-      '[data-action="increment"]',
-    );
-    const removeBtn = card.querySelector<HTMLButtonElement>(
-      '[data-action="remove"]',
-    );
+    const decrementBtn: HTMLButtonElement | null =
+      card.querySelector<HTMLButtonElement>('[data-action="decrement"]');
+    const incrementBtn: HTMLButtonElement | null =
+      card.querySelector<HTMLButtonElement>('[data-action="increment"]');
+    const removeBtn: HTMLButtonElement | null =
+      card.querySelector<HTMLButtonElement>('[data-action="remove"]');
 
     decrementBtn?.addEventListener("click", () => {
       decrementCartItemQuantity(item.product.id);
@@ -165,9 +168,11 @@ const renderCartItems = () => {
   });
 };
 
-const setupActions = () => {
-  const checkoutBtn = document.getElementById("checkout-btn");
-  const clearCartBtn = document.getElementById("clear-cart-btn");
+const setupActions: () => void = () => {
+  const checkoutBtn: HTMLElement | null =
+    document.getElementById("checkout-btn");
+  const clearCartBtn: HTMLElement | null =
+    document.getElementById("clear-cart-btn");
 
   checkoutBtn?.addEventListener("click", () => {
     alert("Checkout no disponible en esta etapa.");
@@ -179,7 +184,7 @@ const setupActions = () => {
   });
 };
 
-const renderAll = () => {
+const renderAll: () => void = () => {
   renderCartItems();
   renderSummary();
   syncCartBadge();

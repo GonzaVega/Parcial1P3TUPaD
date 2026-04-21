@@ -1,8 +1,9 @@
 import { getCurrentUser } from "../../../utils/localStorage";
 import { getCategories, PRODUCTS } from "../../../data/data";
+import type { IUser } from "../../../types/IUser";
 
-const initPage = () => {
-  const user = getCurrentUser();
+const initPage: () => void = () => {
+  const user: IUser | null = getCurrentUser();
 
   if (!user) {
     window.location.href = "/src/pages/auth/login/login.html";
@@ -18,15 +19,15 @@ const initPage = () => {
   renderProductsTable();
 };
 
-const renderCategoryOptions = () => {
-  const categorySelect = document.getElementById(
+const renderCategoryOptions: () => void = () => {
+  const categorySelect: HTMLSelectElement | null = document.getElementById(
     "categoria",
   ) as HTMLSelectElement | null;
   if (!categorySelect) return;
 
   categorySelect.innerHTML = '<option value="">Seleccionar categoría</option>';
 
-  const categories = getCategories();
+  const categories: { nombre: string }[] = getCategories();
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category.nombre;
@@ -35,15 +36,20 @@ const renderCategoryOptions = () => {
   });
 };
 
-const renderProductsTable = () => {
-  const tableBody = document.getElementById("products-table-body");
+const renderProductsTable: () => void = () => {
+  const tableBody: HTMLElement | null = document.getElementById(
+    "products-table-body",
+  );
+
   if (!tableBody) return;
 
   tableBody.innerHTML = "";
 
   PRODUCTS.forEach((product) => {
-    const row = document.createElement("tr");
-    const categorias = product.categorias.map((c) => c.nombre).join(", ");
+    const row: HTMLTableRowElement = document.createElement("tr");
+    const categorias: string = product.categorias
+      .map((c) => c.nombre)
+      .join(", ");
 
     row.innerHTML = `
       <td>${product.id}</td>

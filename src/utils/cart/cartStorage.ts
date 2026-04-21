@@ -2,7 +2,7 @@ import type { Product } from "../../types/product";
 import type { CartItem } from "../../types/cart";
 import { getCurrentUser } from "../localStorage";
 
-const CART_KEY_PREFIX = "cart:user:";
+const CART_KEY_PREFIX: string = "cart:user:";
 
 function getActiveCartKey(): string | null {
   const user = getCurrentUser();
@@ -15,19 +15,19 @@ function getActiveCartKey(): string | null {
 }
 
 function readCartItems(): CartItem[] {
-  const cartKey = getActiveCartKey();
+  const cartKey: string | null = getActiveCartKey();
   if (!cartKey) {
     return [];
   }
 
-  const raw = localStorage.getItem(cartKey);
+  const raw: string | null = localStorage.getItem(cartKey);
 
   if (!raw) {
     return [];
   }
 
   try {
-    const parsed = JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) {
       return [];
     }
@@ -40,7 +40,7 @@ function readCartItems(): CartItem[] {
 }
 
 function saveCartItems(items: CartItem[]): void {
-  const cartKey = getActiveCartKey();
+  const cartKey: string | null = getActiveCartKey();
   if (!cartKey) {
     return;
   }
@@ -53,8 +53,10 @@ export function getCartItems(): CartItem[] {
 }
 
 export function addProductToCart(product: Product): CartItem[] {
-  const cartItems = readCartItems();
-  const existingItem = cartItems.find((item) => item.product.id === product.id);
+  const cartItems: CartItem[] = readCartItems();
+  const existingItem: CartItem | undefined = cartItems.find(
+    (item) => item.product.id === product.id,
+  );
 
   if (existingItem) {
     existingItem.quantity += 1;
@@ -71,8 +73,10 @@ export function getCartItemsCount(): number {
 }
 
 export function incrementCartItemQuantity(productId: number): CartItem[] {
-  const cartItems = readCartItems();
-  const item = cartItems.find((cartItem) => cartItem.product.id === productId);
+  const cartItems: CartItem[] = readCartItems();
+  const item: CartItem | undefined = cartItems.find(
+    (cartItem) => cartItem.product.id === productId,
+  );
 
   if (!item) {
     return cartItems;
@@ -84,8 +88,10 @@ export function incrementCartItemQuantity(productId: number): CartItem[] {
 }
 
 export function decrementCartItemQuantity(productId: number): CartItem[] {
-  const cartItems = readCartItems();
-  const item = cartItems.find((cartItem) => cartItem.product.id === productId);
+  const cartItems: CartItem[] = readCartItems();
+  const item: CartItem | undefined = cartItems.find(
+    (cartItem) => cartItem.product.id === productId,
+  );
 
   if (!item) {
     return cartItems;
@@ -93,14 +99,16 @@ export function decrementCartItemQuantity(productId: number): CartItem[] {
 
   item.quantity -= 1;
 
-  const filteredItems = cartItems.filter((cartItem) => cartItem.quantity > 0);
+  const filteredItems: CartItem[] = cartItems.filter(
+    (cartItem) => cartItem.quantity > 0,
+  );
   saveCartItems(filteredItems);
   return filteredItems;
 }
 
 export function removeItemFromCart(productId: number): CartItem[] {
-  const cartItems = readCartItems();
-  const filteredItems = cartItems.filter(
+  const cartItems: CartItem[] = readCartItems();
+  const filteredItems: CartItem[] = cartItems.filter(
     (item) => item.product.id !== productId,
   );
   saveCartItems(filteredItems);
@@ -108,7 +116,7 @@ export function removeItemFromCart(productId: number): CartItem[] {
 }
 
 export function clearCart(): void {
-  const cartKey = getActiveCartKey();
+  const cartKey: string | null = getActiveCartKey();
   if (!cartKey) {
     return;
   }

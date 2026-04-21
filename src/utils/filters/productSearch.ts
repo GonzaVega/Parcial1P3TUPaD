@@ -12,7 +12,7 @@ export function filterProductsByName(
   products: Product[],
   searchTerm: string,
 ): Product[] {
-  const normalizedSearch = normalizeText(searchTerm);
+  const normalizedSearch: string = normalizeText(searchTerm);
 
   if (!normalizedSearch) {
     return products;
