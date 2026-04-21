@@ -1,5 +1,5 @@
 import { getCurrentUser } from "../../../utils/localStorage";
-import { PRODUCTS } from "../../../data/data";
+import { getCategories, PRODUCTS } from "../../../data/data";
 
 const initPage = () => {
   const user = getCurrentUser();
@@ -14,7 +14,25 @@ const initPage = () => {
     return;
   }
 
+  renderCategoryOptions();
   renderProductsTable();
+};
+
+const renderCategoryOptions = () => {
+  const categorySelect = document.getElementById(
+    "categoria",
+  ) as HTMLSelectElement | null;
+  if (!categorySelect) return;
+
+  categorySelect.innerHTML = '<option value="">Seleccionar categoría</option>';
+
+  const categories = getCategories();
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.nombre;
+    option.textContent = category.nombre;
+    categorySelect.appendChild(option);
+  });
 };
 
 const renderProductsTable = () => {

@@ -100,7 +100,9 @@ export function decrementCartItemQuantity(productId: number): CartItem[] {
 
 export function removeItemFromCart(productId: number): CartItem[] {
   const cartItems = readCartItems();
-  const filteredItems = cartItems.filter((item) => item.product.id !== productId);
+  const filteredItems = cartItems.filter(
+    (item) => item.product.id !== productId,
+  );
   saveCartItems(filteredItems);
   return filteredItems;
 }
