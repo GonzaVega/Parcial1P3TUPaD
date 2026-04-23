@@ -6,7 +6,7 @@ const form: HTMLFormElement | null =
   document.querySelector<HTMLFormElement>("form");
 
 if (form) {
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", (event: SubmitEvent) => {
     event.preventDefault();
 
     const firstName: string | undefined = (
