@@ -188,6 +188,12 @@ main > form {
 
 main > form input[type="text"] {
   flex: 1;
+  border: 1px solid #f2b2a6;
+}
+
+main > form input[type="text"]:focus {
+  border-color: var(--color-focus);
+  border-width: 3px;
 }
 
 aside + main {
@@ -318,6 +324,14 @@ main section:last-of-type select,
 main section:last-of-type textarea {
   width: 100%;
   margin-bottom: 4px;
+  border: 1px solid #f2b2a6;
+}
+
+main section:last-of-type input:focus,
+main section:last-of-type select:focus,
+main section:last-of-type textarea:focus {
+  border-color: var(--color-focus);
+  border-width: 3px;
 }
 
 main section:last-of-type button {
