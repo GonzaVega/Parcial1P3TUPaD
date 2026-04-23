@@ -83,7 +83,7 @@ label {
 
 input {
   padding: 10px;
-  border: 2px solid var(--color-borde);
+  border: 1px solid #f2b2a6;
   border-radius: 5px;
   font-size: 14px;
   margin-bottom: 10px;
@@ -92,6 +92,7 @@ input {
 
 input:focus {
   border-color: var(--color-focus);
+  border-width: 3px;
   outline: none;
 }
 
