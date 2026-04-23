@@ -76,17 +76,24 @@ http://localhost:5173
 
 ```text
 src/
-	pages/
-		store/
-			home/
-				home.html
-				home.ts
-			cart/
-				cart.html
-				cart.ts
-	utils/
-		filters/
-		cart/
+├── auth/
+├── data/
+├── images/
+├── pages/
+│   ├── admin/
+│   │   └── home/
+│   ├── auth/
+│   │   └── login/
+│   └── store/
+│       ├── cart/
+│       └── home/
+├── types/
+├── utils/
+│   ├── cart/
+│   └── filters/
+├── main.ts
+├── routeGuard.ts
+├── style.css
 ```
 
 ## Video de presentación
