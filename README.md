@@ -108,5 +108,5 @@ src/
 Enlace al video (YouTube):
 
 ```text
-PENDIENTE - Agregar URL cuando este publicado
+https://youtu.be/WEVhfVS1uD0
 ```
