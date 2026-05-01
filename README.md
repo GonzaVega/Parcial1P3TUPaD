@@ -66,6 +66,13 @@ El proyecto quedará disponible en:
 http://localhost:5173
 ```
 
+## Credenciales de prueba
+
+Para iniciar sesión como administrador:
+
+- Email: `admin@test.com`
+- Contraseña: `password123`
+
 ## Scripts disponibles
 
 - `pnpm dev`: inicia servidor de desarrollo.
@@ -101,5 +108,5 @@ src/
 Enlace al video (YouTube):
 
 ```text
-PENDIENTE - Agregar URL cuando este publicado
+https://youtu.be/WEVhfVS1uD0
 ```
