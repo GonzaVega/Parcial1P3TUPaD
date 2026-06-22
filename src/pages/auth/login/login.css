@@ -132,6 +132,27 @@ p {
   border-radius: 5px;
 }
 
+.form-message {
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.form-message.error {
+  color: #991b1b;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+}
+
+.form-message.success {
+  color: #166534;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+}
+
 p a {
   color: var(--color-primario);
   text-decoration: none;
