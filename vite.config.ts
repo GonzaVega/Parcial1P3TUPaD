@@ -8,7 +8,7 @@ export default defineConfig({
         index: resolve(__dirname, "index.html"),
         login: resolve(__dirname, "src/pages/auth/login/login.html"),
         registro: resolve(__dirname, "src/pages/auth/login/registro.html"),
-        adminHome: resolve(__dirname, "src/pages/admin/home/home.html"),
+        adminHome: resolve(__dirname, "src/pages/admin/adminHome/adminHome.html"),
         storeHome: resolve(__dirname, "src/pages/store/home/home.html"),
         storeCart: resolve(__dirname, "src/pages/store/cart/cart.html"),
         clientOrders: resolve(__dirname, "src/pages/client/orders/orders.html"),

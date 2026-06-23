@@ -21,7 +21,7 @@ function guardRoute(): void {
 
   if (user && isAuthPage) {
     if (user.role === "admin") {
-      window.location.href = "/src/pages/admin/home/home.html";
+      window.location.href = "/src/pages/admin/adminHome/adminHome.html";
     } else {
       window.location.href = "/src/pages/store/home/home.html";
     }

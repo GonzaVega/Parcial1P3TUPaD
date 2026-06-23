@@ -42,7 +42,7 @@ const loadLinks: (user: IUser | null) => void = (user: IUser | null) => {
   if (user?.role === "admin") {
     const adminLi: HTMLElement = document.createElement("li");
     adminLi.innerHTML =
-      '<a href="/src/pages/admin/home/home.html"><strong>Panel Admin</strong></a>';
+      '<a href="/src/pages/admin/adminHome/adminHome.html"><strong>Panel Admin</strong></a>';
     linksList.appendChild(adminLi);
   }
 
