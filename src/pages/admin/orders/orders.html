@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Productos - Food Store Admin</title>
+    <title>Pedidos - Food Store Admin</title>
     <link rel="stylesheet" href="../../../../src/style.css" />
     <link rel="stylesheet" href="/src/pages/admin/adminHome/adminHome.css" />
-    <link rel="stylesheet" href="./products.css" />
+    <link rel="stylesheet" href="./orders.css" />
   </head>
   <body class="admin-page">
     <header>
@@ -23,8 +23,8 @@
           <ul>
             <li><a href="/src/pages/admin/adminHome/adminHome.html">Dashboard</a></li>
             <li><a href="/src/pages/admin/categories/categories.html">Categorías</a></li>
-            <li><a href="/src/pages/admin/products/products.html" class="active">Productos</a></li>
-            <li><a href="/src/pages/admin/orders/orders.html">Pedidos</a></li>
+            <li><a href="/src/pages/admin/products/products.html">Productos</a></li>
+            <li><a href="/src/pages/admin/orders/orders.html" class="active">Pedidos</a></li>
             <li><a href="/src/pages/store/home/home.html">Ver Tienda</a></li>
           </ul>
         </nav>
@@ -34,33 +34,39 @@
       </aside>
       <main class="admin-main">
         <div class="admin-main-content">
-          <div class="products-header">
-            <h1>Gestión de Productos</h1>
-            <button id="create-product-btn">+ Nuevo Producto</button>
+          <div class="orders-header">
+            <h1>Gestión de Pedidos</h1>
+            <div class="orders-filter">
+              <label for="status-filter">Filtrar por estado:</label>
+              <select id="status-filter">
+                <option value="TODOS">Todos</option>
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="CONFIRMADO">Confirmado</option>
+                <option value="TERMINADO">Terminado</option>
+                <option value="CANCELADO">Cancelado</option>
+              </select>
+            </div>
           </div>
           <div class="table-wrapper">
             <table>
               <thead>
                 <tr>
                   <th data-label="ID">ID</th>
-                  <th data-label="Imagen">Imagen</th>
-                  <th data-label="Nombre">Nombre</th>
-                  <th data-label="Descripción">Descripción</th>
-                  <th data-label="Precio">Precio</th>
-                  <th data-label="Categoría">Categoría</th>
-                  <th data-label="Stock">Stock</th>
+                  <th data-label="Cliente">Cliente</th>
+                  <th data-label="Fecha">Fecha</th>
                   <th data-label="Estado">Estado</th>
-                  <th data-label="Acciones">Acciones</th>
+                  <th data-label="Productos">Productos</th>
+                  <th data-label="Total">Total</th>
                 </tr>
               </thead>
-              <tbody id="products-table-body"></tbody>
+              <tbody id="orders-table-body"></tbody>
             </table>
           </div>
         </div>
       </main>
     </div>
     <script type="module" src="../../../../src/routeGuard.ts"></script>
-    <script type="module" src="./products.ts"></script>
+    <script type="module" src="./orders.ts"></script>
     <script type="module" src="../../../../src/auth/logout.ts"></script>
   </body>
 </html>
