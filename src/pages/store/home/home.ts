@@ -29,11 +29,14 @@ const loadLinks: () => void = () => {
 
   linksList.innerHTML = "";
 
-  const links: string[] = ["Inicio", "Mis Pedidos"];
+  const links: { label: string; url: string }[] = [
+    { label: "Inicio", url: "/src/pages/store/home/home.html" },
+    { label: "Mis Pedidos", url: "/src/pages/client/orders/orders.html" },
+  ];
 
   links.forEach((link) => {
     const li: HTMLElement = document.createElement("li");
-    li.innerHTML = `<a href="#">${link}</a>`;
+    li.innerHTML = `<a href="${link.url}">${link.label}</a>`;
     linksList.appendChild(li);
   });
 

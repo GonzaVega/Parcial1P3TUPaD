@@ -31,7 +31,7 @@ const loadLinks: () => void = () => {
   linksList.appendChild(homeLi);
 
   const ordersLi: HTMLElement = document.createElement("li");
-  ordersLi.innerHTML = '<a href="#">Mis Pedidos</a>';
+  ordersLi.innerHTML = '<a href="/src/pages/client/orders/orders.html">Mis Pedidos</a>';
   linksList.appendChild(ordersLi);
 
   const cartLi: HTMLElement = document.createElement("li");
@@ -311,7 +311,7 @@ const openCheckoutModal: () => void = () => {
     if (submitBtn) submitBtn.disabled = true;
 
     setTimeout(() => {
-      window.location.href = "/src/pages/store/home/home.html";
+      window.location.href = "/src/pages/client/orders/orders.html";
     }, 1500);
   });
 };
