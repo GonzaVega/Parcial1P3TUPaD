@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Food Store</title>
     <link rel="stylesheet" href="../../../../src/style.css" />
+    <link rel="stylesheet" href="./home.css" />
   </head>
   <body class="store-page">
     <header>
@@ -23,6 +24,16 @@
         <input type="text" placeholder="Buscar..." title="Buscar" />
         <button type="submit">Buscar</button>
       </form>
+      <div class="sort-bar">
+        <label for="sort-select">Ordenar por:</label>
+        <select id="sort-select">
+          <option value="">Por defecto</option>
+          <option value="name-asc">Nombre A-Z</option>
+          <option value="name-desc">Nombre Z-A</option>
+          <option value="price-asc">Precio: menor a mayor</option>
+          <option value="price-desc">Precio: mayor a menor</option>
+        </select>
+      </div>
       <section class="product-list"></section>
     </main>
     <footer>

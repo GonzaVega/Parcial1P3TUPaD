@@ -1,6 +1,7 @@
 import { getCurrentUser } from "../../../utils/localStorage";
 import { getCategories, PRODUCTS } from "../../../data/data";
 import type { IUser } from "../../../types/IUser";
+import type { ICategory } from "../../../types/category";
 
 const initPage: () => void = () => {
   const user: IUser | null = getCurrentUser();
@@ -27,10 +28,10 @@ const renderCategoryOptions: () => void = () => {
 
   categorySelect.innerHTML = '<option value="">Seleccionar categoría</option>';
 
-  const categories: { nombre: string }[] = getCategories();
+  const categories: ICategory[] = getCategories();
   categories.forEach((category) => {
     const option = document.createElement("option");
-    option.value = category.nombre;
+    option.value = String(category.id);
     option.textContent = category.nombre;
     categorySelect.appendChild(option);
   });
@@ -47,9 +48,10 @@ const renderProductsTable: () => void = () => {
 
   PRODUCTS.forEach((product) => {
     const row: HTMLTableRowElement = document.createElement("tr");
-    const categorias: string = product.categorias
-      .map((c) => c.nombre)
-      .join(", ");
+    const cats: ICategory[] = getCategories();
+    const catNombre: string | undefined = cats.find(
+      (c) => c.id === product.categoriaId,
+    )?.nombre;
 
     row.innerHTML = `
       <td>${product.id}</td>
@@ -62,7 +64,7 @@ const renderProductsTable: () => void = () => {
         />
       </td>
       <td>${product.nombre}</td>
-      <td>${categorias}</td>
+      <td>${catNombre ?? "—"}</td>
       <td>$${product.precio.toLocaleString()}</td>
       <td>${product.stock}</td>
       <td><button>Editar</button> <button>Eliminar</button></td>

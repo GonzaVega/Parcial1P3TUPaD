@@ -1,22 +1,14 @@
 import type { Product } from "../../types/product";
 
-function normalizeText(value: string): string {
-  return value.trim().toLowerCase();
-}
-
 export function filterProductsByCategory(
   products: Product[],
-  selectedCategory: string | null,
+  selectedCategoryId: number | null,
 ): Product[] {
-  if (!selectedCategory) {
+  if (!selectedCategoryId) {
     return products;
   }
 
-  const normalizedCategory: string = normalizeText(selectedCategory);
-
-  return products.filter((product) =>
-    product.categorias.some(
-      (category) => normalizeText(category.nombre) === normalizedCategory,
-    ),
+  return products.filter(
+    (product) => product.categoriaId === selectedCategoryId,
   );
 }

@@ -52,16 +52,16 @@ export function getCartItems(): CartItem[] {
   return readCartItems();
 }
 
-export function addProductToCart(product: Product): CartItem[] {
+export function addProductToCart(product: Product, quantity: number = 1): CartItem[] {
   const cartItems: CartItem[] = readCartItems();
   const existingItem: CartItem | undefined = cartItems.find(
     (item) => item.product.id === product.id,
   );
 
   if (existingItem) {
-    existingItem.quantity += 1;
+    existingItem.quantity += quantity;
   } else {
-    cartItems.push({ product, quantity: 1 });
+    cartItems.push({ product, quantity });
   }
 
   saveCartItems(cartItems);

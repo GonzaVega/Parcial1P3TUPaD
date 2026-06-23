@@ -1,7 +1,8 @@
 import { getCurrentUser } from "../../../utils/localStorage";
-import { PRODUCTS } from "../../../data/data";
 import { filterProductsByName } from "../../../utils/filters/productSearch";
 import { filterProductsByCategory } from "../../../utils/filters/productCategoryFilter";
+import { sortProducts } from "../../../utils/filters/productSort";
+import type { SortOption } from "../../../utils/filters/productSort";
 import {
   addProductToCart,
   getCartItemsCount,
@@ -9,19 +10,18 @@ import {
 import type { Product } from "../../../types/product";
 import { CART_ICON } from "../../../utils/cart/cartIcon";
 import type { IUser } from "../../../types/IUser";
+import type { ICategory } from "../../../types/category";
+import { fetchJson } from "../../../utils/fetchJson";
 
-const categorias: string[] = Array.from(
-  new Set(
-    PRODUCTS.flatMap((product) =>
-      product.categorias.map((category) => category.nombre),
-    ).filter(Boolean),
-  ),
-);
+let categorias: ICategory[] = [];
+let products: Product[] = [];
 
 const TODAS_LABEL: string = "Todas";
+const TODAS_ID: number = 0;
 
-let selectedCategory: string | null = null;
+let selectedCategoryId: number | null = null;
 let searchValue: string = "";
+let sortBy: SortOption | null = null;
 
 const loadLinks: () => void = () => {
   const linksList: HTMLElement | null = document.querySelector(".navbar-menu");
@@ -66,13 +66,13 @@ const cargarCategorias: () => void = () => {
 
   categoryList.innerHTML = "";
 
-  const createCategoryItem = (categoryName: string, active = false) => {
+  const createCategoryItem = (id: number, name: string, active = false) => {
     const li: HTMLElement = document.createElement("li");
     const link: HTMLAnchorElement = document.createElement("a");
 
     link.href = "#";
-    link.textContent = categoryName;
-    link.dataset.category = categoryName;
+    link.textContent = name;
+    link.dataset.id = String(id);
 
     if (active) {
       link.classList.add("active");
@@ -82,10 +82,10 @@ const cargarCategorias: () => void = () => {
     categoryList.appendChild(li);
   };
 
-  createCategoryItem(TODAS_LABEL, true);
+  createCategoryItem(TODAS_ID, TODAS_LABEL, true);
 
   categorias.forEach((categoria) => {
-    createCategoryItem(categoria);
+    createCategoryItem(categoria.id, categoria.nombre);
   });
 };
 
@@ -114,6 +114,143 @@ const renderSinResultados: (container: Element) => void = (
   container.appendChild(message);
 };
 
+// --- Modal State ---
+let modalProduct: Product | null = null;
+let modalQuantity: number = 1;
+
+const closeDetailModal: () => void = () => {
+  const overlay: HTMLElement | null =
+    document.querySelector<HTMLElement>(".modal-overlay");
+  if (overlay) {
+    overlay.remove();
+  }
+  modalProduct = null;
+  document.body.style.overflow = "";
+};
+
+const renderDetailModal: () => void = () => {
+  const product: Product | null = modalProduct;
+  if (!product) return;
+
+  const isUnavailable: boolean = !product.disponible || product.stock === 0;
+  const maxQty: number = isUnavailable ? 0 : product.stock;
+
+  if (modalQuantity < 1 || modalQuantity > maxQty) {
+    modalQuantity = 1;
+  }
+
+  const existingOverlay: HTMLElement | null =
+    document.querySelector<HTMLElement>(".modal-overlay");
+  if (existingOverlay) {
+    existingOverlay.remove();
+  }
+
+  const categoryName: string | undefined = categorias.find(
+    (c) => c.id === product.categoriaId,
+  )?.nombre;
+  const categoriesHtml: string = categoryName
+    ? `<span>${categoryName}</span>`
+    : "";
+
+  const overlay: HTMLElement = document.createElement("div");
+  overlay.className = "modal-overlay";
+
+  overlay.innerHTML = `
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Detalle de ${product.nombre}">
+      <button type="button" class="modal-close" aria-label="Cerrar">&times;</button>
+      <div class="modal-body">
+        <img src="${product.imagen}" alt="${product.nombre}" />
+        <h2>${product.nombre}</h2>
+        <p class="modal-description">${product.descripcion}</p>
+        <p class="modal-price">$${product.precio.toLocaleString()}</p>
+        <div class="modal-categories">${categoriesHtml}</div>
+        <p class="modal-stock ${isUnavailable ? "out-of-stock" : "in-stock"}">
+          ${isUnavailable ? "Sin stock" : `Stock disponible: ${product.stock}`}
+        </p>
+        <div class="modal-qty">
+          <label for="modal-qty-input">Cantidad:</label>
+          <div class="modal-qty-controls">
+            <span id="modal-qty-display">${modalQuantity}</span>
+            <button type="button" id="modal-qty-dec" ${isUnavailable ? "disabled" : ""}>&minus;</button>
+            <button type="button" id="modal-qty-inc" ${isUnavailable || modalQuantity >= maxQty ? "disabled" : ""}>+</button>
+          </div>
+        </div>
+        <div>
+          <button type="button" id="modal-add-btn" class="modal-add-btn" ${isUnavailable ? "disabled" : ""}>
+            Agregar al carrito
+          </button>
+          <span id="modal-add-feedback" class="modal-add-feedback" hidden>&check; Agregado</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden";
+
+  overlay.querySelector<HTMLButtonElement>(".modal-close")
+    ?.addEventListener("click", closeDetailModal);
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closeDetailModal();
+    }
+  });
+
+  const decBtn: HTMLButtonElement | null =
+    overlay.querySelector<HTMLButtonElement>("#modal-qty-dec");
+  const incBtn: HTMLButtonElement | null =
+    overlay.querySelector<HTMLButtonElement>("#modal-qty-inc");
+  const qtyDisplay: HTMLElement | null =
+    overlay.querySelector<HTMLElement>("#modal-qty-display");
+  const addBtn: HTMLButtonElement | null =
+    overlay.querySelector<HTMLButtonElement>("#modal-add-btn");
+  const feedbackEl: HTMLElement | null =
+    overlay.querySelector<HTMLElement>("#modal-add-feedback");
+
+  const updateQtyDisplay = () => {
+    if (qtyDisplay) qtyDisplay.textContent = String(modalQuantity);
+    if (incBtn) incBtn.disabled = modalQuantity >= maxQty;
+    if (decBtn) decBtn.disabled = modalQuantity <= 1;
+  };
+
+  decBtn?.addEventListener("click", () => {
+    if (modalQuantity > 1) {
+      modalQuantity--;
+      updateQtyDisplay();
+    }
+  });
+
+  incBtn?.addEventListener("click", () => {
+    if (modalQuantity < maxQty) {
+      modalQuantity++;
+      updateQtyDisplay();
+    }
+  });
+
+  addBtn?.addEventListener("click", () => {
+    addProductToCart(product, modalQuantity);
+    syncCartBadge();
+    if (addBtn) addBtn.hidden = true;
+    if (feedbackEl) feedbackEl.hidden = false;
+    setTimeout(() => {
+      closeDetailModal();
+    }, 1000);
+  });
+};
+
+const openDetailModal: (product: Product) => void = (product: Product) => {
+  modalProduct = product;
+  modalQuantity = 1;
+  renderDetailModal();
+};
+
+const isProductAvailable: (product: Product) => boolean = (
+  product: Product,
+) => {
+  return product.disponible && product.stock > 0;
+};
+
 const cargarProductos: (productsToRender: Product[]) => void = (
   productsToRender: Product[],
 ) => {
@@ -129,8 +266,14 @@ const cargarProductos: (productsToRender: Product[]) => void = (
   }
 
   productsToRender.forEach((producto) => {
+    const isAvailable: boolean = isProductAvailable(producto);
     const article: HTMLElement = document.createElement("article");
+    if (!isAvailable) {
+      article.classList.add("out-of-stock");
+    }
+
     article.innerHTML = `
+      ${isAvailable ? '<span class="in-stock-badge">Disponible</span>' : '<span class="out-of-stock-badge">Sin stock</span>'}
       <img src="${producto.imagen}" alt="${producto.nombre}" height="200" width="250" />
       <h3>${producto.nombre}</h3>
       <p>${producto.descripcion}</p>
@@ -139,31 +282,45 @@ const cargarProductos: (productsToRender: Product[]) => void = (
 
     const button: HTMLButtonElement = document.createElement("button");
     button.type = "button";
-    button.textContent = "Agregar al carrito";
-    button.addEventListener("click", () => handleAddToCart(producto));
+    button.textContent = isAvailable
+      ? "Agregar al carrito"
+      : "Sin stock";
+    button.disabled = !isAvailable;
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (isAvailable) {
+        handleAddToCart(producto);
+      }
+    });
 
     article.appendChild(button);
+
+    article.addEventListener("click", () => {
+      openDetailModal(producto);
+    });
+
     productList.appendChild(article);
   });
 };
 
 const applyFilters: () => void = () => {
   const byCategory: Product[] = filterProductsByCategory(
-    PRODUCTS,
-    selectedCategory,
+    products,
+    selectedCategoryId,
   );
   const byName: Product[] = filterProductsByName(byCategory, searchValue);
-  cargarProductos(byName);
+  const sorted: Product[] = sortProducts(byName, sortBy);
+  cargarProductos(sorted);
 };
 
-const updateActiveCategory: (clickedCategory: string) => void = (
-  clickedCategory: string,
+const updateActiveCategory: (clickedId: string) => void = (
+  clickedId: string,
 ) => {
   const links: NodeListOf<HTMLAnchorElement> =
     document.querySelectorAll<HTMLAnchorElement>(".category-list a");
 
   links.forEach((link) => {
-    const isCurrent: boolean = link.dataset.category === clickedCategory;
+    const isCurrent: boolean = link.dataset.id === clickedId;
     link.classList.toggle("active", isCurrent);
   });
 };
@@ -181,11 +338,13 @@ const setupCategoryFilter: () => void = () => {
 
     event.preventDefault();
 
-    const category: string | undefined = clickedLink.dataset.category;
-    if (!category) return;
+    const id: string | undefined = clickedLink.dataset.id;
+    if (!id) return;
 
-    selectedCategory = category === TODAS_LABEL ? null : category;
-    updateActiveCategory(category);
+    const parsedId: number = Number(id);
+
+    selectedCategoryId = parsedId === TODAS_ID ? null : parsedId;
+    updateActiveCategory(id);
     applyFilters();
   });
 };
@@ -211,9 +370,40 @@ const setupSearch: () => void = () => {
   input.addEventListener("input", applySearch);
 };
 
-loadLinks();
-cargarCategorias();
-applyFilters();
-setupCategoryFilter();
-setupSearch();
-syncCartBadge();
+const setupSort: () => void = () => {
+  const select: HTMLSelectElement | null =
+    document.querySelector<HTMLSelectElement>("#sort-select");
+  if (!select) return;
+
+  select.addEventListener("change", () => {
+    const value: string = select.value;
+    sortBy = (value === "" ? null : value) as SortOption | null;
+    applyFilters();
+  });
+};
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeDetailModal();
+  }
+});
+
+const init: () => Promise<void> = async () => {
+  try {
+    categorias = await fetchJson<ICategory[]>("/data/categorias.json");
+    const allProducts: Product[] = await fetchJson<Product[]>("/data/productos.json");
+    products = allProducts.filter((p) => p.disponible && !p.eliminado);
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+
+  loadLinks();
+  cargarCategorias();
+  applyFilters();
+  setupCategoryFilter();
+  setupSearch();
+  setupSort();
+  syncCartBadge();
+};
+
+init();
