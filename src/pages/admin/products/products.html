@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Categorías - Food Store Admin</title>
+    <title>Productos - Food Store Admin</title>
     <link rel="stylesheet" href="../../../../src/style.css" />
     <link rel="stylesheet" href="/src/pages/admin/adminHome/adminHome.css" />
-    <link rel="stylesheet" href="./categories.css" />
+    <link rel="stylesheet" href="./products.css" />
   </head>
   <body class="admin-page">
     <header>
@@ -22,8 +22,8 @@
         <nav>
           <ul>
             <li><a href="/src/pages/admin/adminHome/adminHome.html">Dashboard</a></li>
-            <li><a href="/src/pages/admin/categories/categories.html" class="active">Categorías</a></li>
-            <li><a href="/src/pages/admin/products/products.html">Productos</a></li>
+            <li><a href="/src/pages/admin/categories/categories.html">Categorías</a></li>
+            <li><a href="/src/pages/admin/products/products.html" class="active">Productos</a></li>
             <li><a href="#">Pedidos</a></li>
             <li><a href="/src/pages/store/home/home.html">Ver Tienda</a></li>
           </ul>
@@ -34,9 +34,9 @@
       </aside>
       <main class="admin-main">
         <div class="admin-main-content">
-          <div class="categories-header">
-            <h1>Gestión de Categorías</h1>
-            <button id="create-category-btn">+ Nueva Categoría</button>
+          <div class="products-header">
+            <h1>Gestión de Productos</h1>
+            <button id="create-product-btn">+ Nuevo Producto</button>
           </div>
           <div class="table-wrapper">
             <table>
@@ -46,17 +46,21 @@
                   <th data-label="Imagen">Imagen</th>
                   <th data-label="Nombre">Nombre</th>
                   <th data-label="Descripción">Descripción</th>
+                  <th data-label="Precio">Precio</th>
+                  <th data-label="Categoría">Categoría</th>
+                  <th data-label="Stock">Stock</th>
+                  <th data-label="Estado">Estado</th>
                   <th data-label="Acciones">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="categories-table-body"></tbody>
+              <tbody id="products-table-body"></tbody>
             </table>
           </div>
         </div>
       </main>
     </div>
     <script type="module" src="../../../../src/routeGuard.ts"></script>
-    <script type="module" src="./categories.ts"></script>
+    <script type="module" src="./products.ts"></script>
     <script type="module" src="../../../../src/auth/logout.ts"></script>
   </body>
 </html>
