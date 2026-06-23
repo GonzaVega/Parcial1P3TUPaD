@@ -108,7 +108,8 @@ const renderEmptyState: (container: HTMLElement) => void = (
 ) => {
   const empty: HTMLParagraphElement = document.createElement("p");
   empty.className = "cart-empty";
-  empty.textContent = "Tu carrito está vacío.";
+  empty.innerHTML =
+    'Tu carrito está vacío. <a href="/src/pages/store/home/home.html">Ver catálogo</a>';
   container.appendChild(empty);
 };
 

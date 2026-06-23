@@ -58,8 +58,12 @@ export function addProductToCart(product: Product, quantity: number = 1): CartIt
     (item) => item.product.id === product.id,
   );
 
+  const currentQty = existingItem ? existingItem.quantity : 0;
+  const newQty = currentQty + quantity;
+  if (newQty > product.stock) return cartItems;
+
   if (existingItem) {
-    existingItem.quantity += quantity;
+    existingItem.quantity = newQty;
   } else {
     cartItems.push({ product, quantity });
   }
@@ -81,6 +85,8 @@ export function incrementCartItemQuantity(productId: number): CartItem[] {
   if (!item) {
     return cartItems;
   }
+
+  if (item.quantity >= item.product.stock) return cartItems;
 
   item.quantity += 1;
   saveCartItems(cartItems);
